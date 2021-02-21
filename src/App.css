@@ -1,5 +1,8 @@
-.error {
-  color:#db2269;
-  font-size: 0.625em;
-  display: relative;
+.form-check {
+  margin-left: -2rem !important;
+}
+.form-check-input {
+  position: absolute;
+  margin-left: 1rem !important;
+  margin-top: 7px !important;
 }
