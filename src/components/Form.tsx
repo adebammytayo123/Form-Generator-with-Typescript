@@ -1,153 +1,87 @@
 import React from 'react';
-import Input, { InputProps } from "./Input/Input";
-import Select, { SelectProps } from "./Select/Select";
-import Textarea, { TextareaProps } from "./Textarea/Textarea"
+// import Input, { InputProps } from "./Input/Input";
+// import Select, { SelectProps } from "./Select/Select";
+// import Textarea, { TextareaProps } from "./Textarea/Textarea"
 import Button from './Button';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import FormikControl from './FormikControl';
 
-const Form = () => {
-  const inputs: InputProps[] = [
-    {
-      label: 'Full Name',
-      name: 'name',
-      type: 'text',
-      placeholder: 'Enter Name..',
-      required: true,
-      value: '',
-      errorText: 'Full name is required !' || 'Name must be atleast 10 characters long',
-    },
-    {
-      label: "Email",
-      name: "email",
-      type: "email",
-      placeholder: "a@example.com",
-      required: true,
-      value: '',
-      errorText: 'Email is required !' || 'Please enter a valid email',
-    },
-    {
-      label: "Password",
-      name: "password",
-      type: 'password',
-      placeholder: "Enter Password",
-      required: true,
-      value: '',
-      errorText: 'Password is required !' || 'Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji',
-    },
-    {
-      label: "Age",
-      name: "number",
-      type: "number",
-      placeholder: "Age",
-      required: true,
-      value: '',
-      errorText: 'Age is Required !' || 'User must be above 18 years of Age',
-    },
-    {
-      label: "Date",
-      name: "date",
-      type: "date",
-      required: true,
-      value: '',
-      errorText: 'Date is Required !' || 'Please enter a valid date',
-    },
-    {
-      label: "File",
-      name: "file",
-      type: "file",
-      accept: "image/*",
-      required: true,
-      value: '',
-      errorText: 'File is required !' || 'Please select a file',
-    },
-    {
-      label: "Terms and conditions",
-      name: "checkbox",
-      type: "checkbox",
-      required: false,
-      errorText: 'Required !',
-    },
-    {
-      label: "Male",
-      name: "gender",
-      type: "radio",
-      value: "male",
-      required: false,
-      errorText: 'Required !',
-    },
-    {
-      label: "Female",
-      name: "gender",
-      type: "radio",
-      value: "female",
-      required: false,
-      errorText: 'Required !',
-    },
-  ];
 
-  const selects: SelectProps[] = [
-    {
-      required: true,
-      disabled: false,
-      name: "select_Favorite_Fruits",
-      multiple: true,
-      label: "Select Favorite Fruits",
-      errorText: "Please select your preferred fruits !",
-      options: [
-        { value: "apple", label: "Apple" },
-        { value: "banana", label: "Banana" },
-        { value: "cherry", label: "Cherry" },
-        { value: "mango", label: "Mango" },
-        { value: "orange", label: "Orange" },
-        { value: "pawpaw", label: "Paw Paw" },
-      ],
-    },
-  ];
-  const texts: TextareaProps[] = [
-    {
-      label: "Comment",
-      name: "comment",
-      type: "text",
-      value: "",
-      required: true,
-      placeholder: "Enter your comment here..",
-      cols: 3,
-      rows: 3,
-      maxlength: 150,
-      autofocus: false,
-      readonly: false,
-      disabled: false,
-      errorText: 'Please leave a comment !',
-    },
+
+const FormContainer = () => {
+ 
+  const dropDownOptions = [
+    {key: 'select an option', value: ''},
+    {key: 'option 1', value: 'option1'},
+    {key: 'option 2', value: 'option2'},
+    {key: 'option 3', value: 'option3'},
   ]
-  return (
-    <form className="row">
-      {inputs.map((input, index) => (
-        <Input key={index} {...input} />
-      ))}
-      {selects.map((select, index) => (
-        <Select key={index} {...select} />
-      ))}
-      {texts.map((text, index) => (
-        <Textarea key={index} {...text} />
-      ))}
-      <Button
-        type="submit"
-        color="primary"
-        size="sm"
-        block
-        outline
-        onClick={(e) => {
-          e.preventDefault();
-          console.log(inputs);
-          console.log(selects)
-          console.log(texts)
-        }}
-      >
-        Send
-        </Button>
-    </form>
-  )
 
+  const InitialValues = {
+    name: '',
+    email: '', 
+    password: '',
+    age: '',
+    date: '',
+    file: '',
+    description: '',
+    selectOption: '',
+  };
+  const validationSchema = Yup.object({
+    name: Yup.string().required('required!'),
+    email: Yup.string().required('required!'),
+    password: Yup.string().required('required!'),
+    age: Yup.number().required('required!')
+    .min(18)
+    .max(50),
+    date: Yup.string().required('required!'),
+    file: Yup.string().required('required!'),
+    description: Yup.string().required('required!'),
+    selectOption: Yup.string().required('required!'),
+  })
+  const onSubmit = (values: any, { resetForm }: any) => {
+  console.log('form data', values);
+  alert(JSON.stringify(values));
+  resetForm({values: ""})
 }
 
-export default Form;
+  return (
+    <Formik initialValues={InitialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      {
+        formik => <div className="container my-4">
+          <Form className='row'>
+          <FormikControl control='input' type='text' label='Full Name' name='name' placeholder= 'Full Name...' value = 'name' required={true}
+          />
+          <FormikControl control='input' type='email' label='Email' name='email' placeholder= 'a@example.com'value = 'email' required={true}
+          />
+          <FormikControl control='input' type='password' label='Password' name='password' placeholder= 'Password..' value= 'password' required={true}
+          />
+          <FormikControl control='input' type='number' label='Age' name='age' placeholder= 'Age..'value = 'age' required={true}
+          />
+          <FormikControl control='input' type='date' label='Date' name='date' value = 'date' required={true}
+          />
+          <FormikControl control='input' type='file' label='File' name='file' value = 'file' 
+          placeholder='file...' required={true} accept= "image/*"
+          />
+          <FormikControl control='textarea' type='text' label='Description' name='description'  placeholder= 'Enter text here..' required={true} 
+          /><FormikControl control='select' label='Select a topic' name='selectOption' options ={dropDownOptions} required={true} 
+          />
+          <Button
+            type="submit"
+            color="primary"
+            size="sm"
+            block
+            outline
+          >
+            Send
+        </Button>
+        </Form>
+        </div>
+      }
+    </Formik>
+  )
+  
+}
+
+export default FormContainer;

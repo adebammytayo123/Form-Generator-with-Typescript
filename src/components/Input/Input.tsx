@@ -1,52 +1,16 @@
 import React, { useState } from "react";
 import hide from './hide.svg';
 import show from './show.svg';
+import { Field, ErrorMessage } from 'formik';
+import TextError from "../TextError";
 
-export type InputProps = {
-    type: | string | "button" | "checkbox" | "date" | "email" | "file" | "hidden" | "number" | "password" | "radio" | "search" | "tel" | "text" | "time" | "url";
-    name: string;
-    value?: any;
-    placeholder?: string;
-    disabled?: boolean;
-    hidden?: boolean;
-    inputClass?: string;
-    labelClass?: string;
-    inputStyle?: {};
-    labelStyle?: {};
-    onChange?: (value: string) => void;
-    accept?: string | "image/*" | "text/*" | "application/*" | "video/*";
-    autocomplete?: "on" | "off";
-    autofocus?: boolean;
-    checked?: any;
-    max?: number;
-    maxlength?: number;
-    min?: number;
-    minlength?: number;
-    readonly?: boolean;
-    required?: boolean;
-    step?: number;
-    label?: string;
-    feedbackClass?: string;
-    errorText?: string;
-    color?: | "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "light" | "dark" | "link";
-};
-
-export default function Input(props: InputProps) {
-    const [value, setValue] = useState(props.value);
+export default function Input(props: {
+    [x: string]: any; name: any; label: any;
+}) {
     const [visibility, setVisibility] = useState(false);
     const id = `input-${props.name}-${Math.random()}`;
 
-    const change = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (props.onChange) {
-            props.onChange(event.target.value);
-        }
-
-        if (props.type === 'checkbox') {
-            setValue(event.target.checked);
-        } else {
-            setValue(event.target.value);
-        }
-    };
+    const { label, name, ...rest } = props;
 
     const togglePassword = () => {
         setVisibility(!visibility);
@@ -60,58 +24,36 @@ export default function Input(props: InputProps) {
                     style={props.labelStyle}
                     htmlFor={id}
                 >
-                    {props.label} {props.required ? '*' : ''}
-                    <input
+                    {label} {props.required ? '*' : ''}
+                    <Field
                         type={props.type}
                         className={props.inputClass || "form-check-input"}
                         id={id}
-                        value={value}
                         required={props.required}
-                        onChange={change}
-                        name={props.name}
-                        disabled={props.disabled}
-                        hidden={props.hidden}
-                        style={props.inputStyle}
-                        autoFocus={props.autofocus}
-                        checked={props.checked}
-                        readOnly={props.readonly}
+                        {...rest}
                     />
                 </label>
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                <ErrorMessage name={name} />
             </div>
         );
     } else if (props.type === "file") {
         return (
             <div className="custom-file col-12 col-md-6 col-lg-4 mb-3">
-                <input
+                <Field
                     type={props.type}
                     className={props.inputClass || "custom-file-input"}
-                    id={id}
                     required={props.required}
-                    onChange={change}
-                    name={props.name}
-                    disabled={props.disabled}
-                    hidden={props.hidden}
-                    style={props.inputStyle}
-                    accept={props.accept}
-                    autoFocus={props.autofocus}
-                    placeholder={props.placeholder}
-                    readOnly={props.readonly}
+                    id={id}
+                    name={name}
                 />
                 <label
                     className={props.labelClass || "custom-file-label"}
                     style={props.labelStyle}
                     htmlFor={id}
                 >
-                    {props.label}
+                    {label}
                 </label>
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                <ErrorMessage name={name} />
             </div>
         );
     }
@@ -123,32 +65,16 @@ export default function Input(props: InputProps) {
                     style={props.labelStyle}
                     htmlFor={id}
                 >
-                    {props.label}
+                    {label}
                 </label>
                 <span className="text-danger">{props.required ? '*' : ''}</span>
                 <div className="input-group">
-                    <input
+                    <Field
                         type={visibility ? "text" : "password"}
                         className={props.inputClass || "form-control"}
-                        id={id}
-                        placeholder={props.placeholder}
-                        value={value}
                         required={props.required}
-                        onChange={change}
-                        name={props.name}
-                        disabled={props.disabled}
-                        hidden={props.hidden}
-                        style={props.inputStyle}
-                        accept={props.accept}
-                        autoComplete={props.autocomplete}
-                        autoFocus={props.autofocus}
-                        checked={props.checked}
-                        max={props.max}
-                        maxLength={props.maxlength}
-                        min={props.min}
-                        minLength={props.minlength}
-                        readOnly={props.readonly}
-                        step={props.step}
+                        id={id}
+                        name={name}
                     />
                     <div className="input-group-append">
                         <div className="input-group-text">
@@ -156,10 +82,9 @@ export default function Input(props: InputProps) {
                         </div>
                     </div>
                 </div>
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                <ErrorMessage
+                    // className={props.feedbackClass || "form-text text-danger"} 
+                    name={name} />
             </div>
         );
     } else {
@@ -173,33 +98,17 @@ export default function Input(props: InputProps) {
                     {props.label}
                 </label>
                 <span className="text-danger">{props.required ? '*' : ''}</span>
-                <input
+                <Field
                     type={props.type}
                     className={props.inputClass || "form-control"}
+                    required={props.required}
                     id={id}
                     placeholder={props.placeholder}
-                    value={value}
-                    required={props.required}
-                    onChange={change}
                     name={props.name}
-                    disabled={props.disabled}
-                    hidden={props.hidden}
-                    style={props.inputStyle}
-                    accept={props.accept}
-                    autoComplete={props.autocomplete}
-                    autoFocus={props.autofocus}
-                    checked={props.checked}
-                    max={props.max}
-                    maxLength={props.maxlength}
-                    min={props.min}
-                    minLength={props.minlength}
-                    readOnly={props.readonly}
-                    step={props.step}
                 />
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                <ErrorMessage
+                    component={TextError}
+                    name={name} />
             </div>
         );
     }

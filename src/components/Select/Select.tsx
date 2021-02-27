@@ -1,130 +1,50 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Field, ErrorMessage } from 'formik';
+import TextError from '../TextError';
 
-type OptionsProps = {
-    value: string;
-    label?: string;
-    selected?: boolean;
-    disabled?: boolean;
-};
-
-export type SelectProps = {
-    options: OptionsProps[];
-    autofocus?: boolean;
-    disabled?: boolean;
-    multiple?: boolean;
-    name: string;
-    label?: string;
-    required?: boolean;
-    value?: string | string[];
-    onChange?: (value: string | string[]) => void;
-    inputClass?: string;
-    inputStyle?: {};
-    labelClass?: string;
-    labelStyle?: {};
-    feedbackClass?: string;
-    errorText?: string;
-};
-
-export default function Select(props: SelectProps) {
-    const [value, setValue] = useState(props.value);
-    const id = `input-${props.name}-${Math.random()}`;
-
-    const change = (event: React.ChangeEvent<HTMLSelectElement & { value: string | string[] }>) => {
-        if (props.multiple) {
-            const options = event.target.options;
-            const values = [];
-            for (let i = 0; i < options.length; i++) {
-                const option = options.item(i);
-                if (option?.selected) {
-                    values.push(option.value);
-                }
-            }
-            if (props.onChange) {
-                props.onChange(values);
-            }
-            setValue(values);
-        } else {
-            if (props.onChange) {
-                props.onChange(event.target.value);
-            }
-            setValue(event.target.value);
-
-        }
-    };
-
-    if (!props.multiple) {
+const Select1 = (props: { [x: string]: any; label: any; name: any; options: any; }) => {
+    const { label, name, options, ...rest } = props;
+    if(props.multiple) {
         return (
-            <div className="col-12 col-md-6 col-lg-4 mb-3">
-                <label
-                    htmlFor={id}
-                    className={props.labelClass}
-                    style={props.labelStyle}
+            <div className="form-group col-12 col-md-6 col-lg-4 mb-3">
+                <label htmlFor={name}>{label}</label>
+                <Field
+                    as="select"
+                    id={name}
+                    name={name}
+                    className={props.inputClass || "form-control"}
+                    {...rest}
                 >
-                    {props.label} {props.required ? '*' : ''}
-                </label>
-                <select
-                    autoFocus={props.autofocus}
-                    multiple={props.multiple}
-                    name={props.name}
-                    required={props.required}
-                    value={value}
-                    onChange={change}
-                    className={props.inputClass || "custom-select"}
-                    style={props.inputStyle}
-                    id={id}
-                >
-                    {props.options.map(option => (
-                        <option
-                            key={option.value}
-                            value={option.value}
-                            label={option.label || option.value}
-                            disabled={option.disabled}
-                        />
-                    ))}
-                </select>
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                    {options.map((option: { value: string | number | readonly string[] | null | undefined; key: React.ReactNode; }) => {
+                        return (
+                            <option key={option.value as string} value={option.value as []}>{option.key}</option>
+                        )
+                    })}
+                </Field>
+                <ErrorMessage name={name} component={TextError} />
             </div>
-        );
+        )
     } else {
         return (
-            <div className="col-12 col-md-6 col-lg-4 mb-3">
-                <label
-                    htmlFor={id}
-                    className={props.labelClass}
-                    style={props.labelStyle}
+            <div className="form-group col-12 col-md-6 col-lg-4 mb-3">
+                <label htmlFor={name}>{label}</label>
+                <Field
+                    as="select"
+                    id={name}
+                    name={name}
+                    className={props.inputClass || "custom-select"}
+                    {...rest}
                 >
-                    {props.label}
-                </label>
-                <span className="text-danger">{props.required ? '*' : ''}</span>
-                <select
-                    autoFocus={props.autofocus}
-                    multiple={props.multiple}
-                    name={props.name}
-                    required={props.required}
-                    value={value}
-                    onChange={change}
-                    className={props.inputClass || "form-control"}
-                    style={props.inputStyle}
-                    id={id}
-                >
-                    {props.options.map(option => (
-                        <option
-                            key={option.value}
-                            value={option.value}
-                            label={option.label || option.value}
-                            disabled={option.disabled}
-                        />
-                    ))}
-                </select>
-                <small
-                    className={props.feedbackClass || "form-text text-danger"}>
-                    {props.errorText}
-                </small>
+                    {options.map((option: { value: string | number | readonly string[] | null | undefined; key: React.ReactNode; }) => {
+                        return (
+                            <option key={option.value as string} value={option.value as string}>{option.key}</option>
+                        )
+                    })}
+                </Field>
+                <ErrorMessage name={name} component={TextError} />
             </div>
-        );
+        )
     }
 }
 
+export default Select1
